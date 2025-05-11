@@ -15,6 +15,14 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/AslamSunkesula/fullstack-bank.git'
             }
         }
+        stage('Clean workspace') {
+            steps {
+                cleanWs()
+                // Ensure proper permissions on workspace
+                sh 'sudo chown -R jenkins:jenkins . || true'
+                sh 'sudo chmod -R 755 . || true'
+            }
+        }
 
         // stage('Dependency-check') {
         //     steps {
@@ -39,28 +47,31 @@ pipeline {
 
         stage('Install dependencies') {
             steps {
-                sh 'npm install'
+                script {
+                    // Use --unsafe-perm flag for root-related permission issues
+                    sh 'npm install --unsafe-perm --prefix }'
+                }
             }
         }
 
         stage('Backend build') {
             steps {
                 dir('/var/lib/jenkins/workspace/bank-app/app/backend') {
-                    sh 'npm install'
-                }
+                sh 'npm install --unsafe-perm'                }
             }
         }
 
         stage('Frontend build') {
             steps {
                 dir('/var/lib/jenkins/workspace/bank-app/app/frontend') {
-                    sh 'npm install'
+                sh 'npm install --unsafe-perm'
                 }
             }
         }
-        stage('deployment') {
+        stage('Deployment') {
             steps {
-               sh 'docker compose -f docker-compose.yml up -d'
+                // Ensure docker-compose has proper permissions
+                sh 'docker compose -f docker-compose.yml up -d --build'
             }
         }
     }
