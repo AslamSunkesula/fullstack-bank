@@ -1,10 +1,19 @@
 pipeline {
     agent any
-
+    
     stages {
         stage('Git-checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/AslamSunkesula/fullstack-bank.git'
+            }
+        }
+    }
+    stages {
+        stage('Dependency-check') {
+            steps {
+                dependencyCheck additionalArguments: '--scan ./app/backend  --disableYarnAudit --disableNodeAudi', odcInstallation: 'DC'
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+                
             }
         }
     }
