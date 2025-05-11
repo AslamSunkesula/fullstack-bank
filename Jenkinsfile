@@ -54,31 +54,31 @@ pipeline {
             }
         }
 
-        stage('Backend build') {
-            steps {
-                dir('/var/lib/jenkins/workspace/bank-app/app/backend') {
-                    sh 'npm install --unsafe-perm'
-                    // Uncomment the following line if a build step is required
-                    // sh 'npm run build'
-                }
-            }
-        }
+        // stage('Backend build') {
+        //     steps {
+        //         dir('/var/lib/jenkins/workspace/bank-app/app/backend') {
+        //             sh 'npm install'
+        //             // Uncomment the following line if a build step is required
+        //             // sh 'npm run build'
+        //         }
+        //     }
+        // }
 
-        stage('Frontend build') {
-            steps {
-                dir('/var/lib/jenkins/workspace/bank-app/app/frontend') {
-                    sh 'npm install --unsafe-perm'
-                    // Uncomment the following line if a build step is required
-                    // sh 'npm run build'
-                }
-            }
-        }
+        // stage('Frontend build') {
+        //     steps {
+        //         dir('/var/lib/jenkins/workspace/bank-app/app/frontend') {
+        //             sh 'npm install'
+        //             // Uncomment the following line if a build step is required
+        //             // sh 'npm run build'
+        //         }
+        //     }
+        // }
 
-        stage('Deployment') {
-            steps {
-                // Deploy using docker-compose
-                sh 'docker compose -f docker-compose.yml up -d --build'
-            }
-        }
+        // stage('Deployment') {
+        //     steps {
+        //         // Deploy using docker-compose
+        //         sh 'docker compose -f docker-compose.yml up -d --build'
+        //     }
+        // }
     }
 }
