@@ -16,26 +16,26 @@ pipeline {
             }
         }
 
-        // stage('OWASP FS SCAN') {
-        //     steps {
-        //         dependencyCheck additionalArguments: '--scan ./app/backend --disableYarnAudit --disableNodeAudit', odcInstallation: 'DC'
-        //         dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
-        //     }
-        // }
+        stage('OWASP FS SCAN') {
+            steps {
+                dependencyCheck additionalArguments: '--scan ./app/backend --disableYarnAudit --disableNodeAudit', odcInstallation: 'DC'
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+            }
+        }
 
-        // stage('TRIVY FS SCAN') {
-        //     steps {
-        //         sh "trivy fs ."
-        //     }
-        // }
+        stage('TRIVY FS SCAN') {
+            steps {
+                sh "trivy fs ."
+            }
+        }
 
-        // stage('SONARQUBE ANALYSIS') {
-        //     steps {
-        //         withSonarQubeEnv('sonar') {
-        //             sh "$SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Bank -Dsonar.projectKey=Bank"
-        //         }
-        //     }
-        // }
+        stage('SONARQUBE ANALYSIS') {
+            steps {
+                withSonarQubeEnv('sonar') {
+                    sh "$SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Bank -Dsonar.projectKey=Bank"
+                }
+            }
+        }
 
         stage('Install Dependencies (Root)') {
             steps {
