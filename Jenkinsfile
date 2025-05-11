@@ -49,7 +49,7 @@ pipeline {
             steps {
                 script {
                     // Install project dependencies
-                    sh 'npm install --unsafe-perm'
+                    sh 'npm install'
                 }
             }
         }
