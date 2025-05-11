@@ -2,7 +2,6 @@ pipeline {
     agent any
     tools {
         nodejs 'node16'
-        //////
     }
 
     environment {
@@ -15,6 +14,7 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/AslamSunkesula/fullstack-bank.git'
             }
         }
+
         stage('Clean workspace') {
             steps {
                 cleanWs()
@@ -33,7 +33,7 @@ pipeline {
 
         // stage('TRIVY FS SCAN') {
         //     steps {
-        //         sh "trivy fs --format table -o trivy-fs-report.html ."
+        //         sh 'trivy fs --format table -o trivy-fs-report.html .'
         //     }
         // }
 
@@ -48,32 +48,37 @@ pipeline {
         stage('Install dependencies') {
             steps {
                 script {
-                    // Use --unsafe-perm flag for root-related permission issues
-                    sh 'npm install --unsafe-perm --prefix }'
+                    // Install project dependencies
+                    sh 'npm install --unsafe-perm'
                 }
             }
         }
 
         stage('Backend build') {
             steps {
-                dir('/var/lib/jenkins/workspace/bank-app/app/backend') {
-                sh 'npm install --unsafe-perm'                }
+                dir('app/backend') {
+                    sh 'npm install --unsafe-perm'
+                    // Uncomment the following line if a build step is required
+                    // sh 'npm run build'
+                }
             }
         }
 
         stage('Frontend build') {
             steps {
-                dir('/var/lib/jenkins/workspace/bank-app/app/frontend') {
-                sh 'npm install --unsafe-perm'
+                dir('app/frontend') {
+                    sh 'npm install --unsafe-perm'
+                    // Uncomment the following line if a build step is required
+                    // sh 'npm run build'
                 }
             }
         }
+
         stage('Deployment') {
             steps {
-                // Ensure docker-compose has proper permissions
+                // Deploy using docker-compose
                 sh 'docker compose -f docker-compose.yml up -d --build'
             }
         }
     }
-
 }
