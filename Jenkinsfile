@@ -1,6 +1,6 @@
 pipeline {
     agent any
-    
+
     environment {
         sonarScannerHome = tool 'SonarQube'
     }
@@ -19,9 +19,9 @@ pipeline {
             }
         }
 
-        stage('Trivy FS Scan') {
+        stage('TRIVY FS SCAN') {
             steps {
-                sh 'trivy fs .'
+                sh "trivy fs ."
             }
         }
 
