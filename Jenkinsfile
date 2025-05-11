@@ -11,30 +11,44 @@ pipeline {
     stages {
         stage('Git-checkout') {
             steps {
-                dir('bank-app') {
-                    git branch: 'main', url: 'https://github.com/AslamSunkesula/fullstack-bank.git'
-                }
+                git branch: 'main', url: 'https://github.com/AslamSunkesula/fullstack-bank.git'
             }
         }
 
         stage('Clean workspace') {
             steps {
                 cleanWs()
+                // Ensure proper permissions on workspace
                 sh 'sudo chown -R jenkins:jenkins . || true'
                 sh 'sudo chmod -R 755 . || true'
             }
         }
 
-        stage('Debug workspace') {
-            steps {
-                sh 'ls -la'
-                sh 'ls -la bank-app'
-            }
-        }
+        // stage('Dependency-check') {
+        //     steps {
+        //         dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP'
+        //         dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+        //     }
+        // }
+
+        // stage('TRIVY FS SCAN') {
+        //     steps {
+        //         sh 'trivy fs --format table -o trivy-fs-report.html .'
+        //     }
+        // }
+
+        // stage('Sonar-scanner') {
+        //     steps {
+        //         withSonarQubeEnv('sonar-server') {
+        //             sh "$sonarScannerHome/bin/sonar-scanner -Dsonar.projectName=Bank -Dsonar.projectKey=Bank"
+        //         }
+        //     }
+        // }
 
         stage('Install dependencies') {
             steps {
-                dir('bank-app') {
+                script {
+                    // Install project dependencies
                     sh 'npm install --unsafe-perm'
                 }
             }
@@ -42,7 +56,7 @@ pipeline {
 
         stage('Backend build') {
             steps {
-                dir('bank-app/app/backend') {
+                dir('/var/lib/jenkins/workspace/bank-app/app/backend') {
                     sh 'npm install --unsafe-perm'
                     // Uncomment the following line if a build step is required
                     // sh 'npm run build'
@@ -52,7 +66,7 @@ pipeline {
 
         stage('Frontend build') {
             steps {
-                dir('bank-app/app/frontend') {
+                dir('/var/lib/jenkins/workspace/bank-app/app/frontend') {
                     sh 'npm install --unsafe-perm'
                     // Uncomment the following line if a build step is required
                     // sh 'npm run build'
@@ -62,9 +76,8 @@ pipeline {
 
         stage('Deployment') {
             steps {
-                dir('bank-app') {
-                    sh 'docker compose -f docker-compose.yml up -d --build'
-                }
+                // Deploy using docker-compose
+                sh 'docker compose -f docker-compose.yml up -d --build'
             }
         }
     }
