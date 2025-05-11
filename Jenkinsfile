@@ -8,7 +8,6 @@ pipeline {
             }
         }
     }
-    stages {
         stage('Dependency-check') {
             steps {
                 dependencyCheck additionalArguments: '--scan ./app/backend  --disableYarnAudit --disableNodeAudi', odcInstallation: 'DC'
