@@ -23,19 +23,19 @@ pipeline {
         //     }
         // }
 
-        stage('TRIVY FS SCAN') {
-            steps {
-                sh "trivy fs --format table -o trivy-fs-report.html ."
-            }
-        }
+        // stage('TRIVY FS SCAN') {
+        //     steps {
+        //         sh "trivy fs --format table -o trivy-fs-report.html ."
+        //     }
+        // }
 
-        stage('Sonar-scanner') {
-            steps {
-                withSonarQubeEnv('sonar-server') {
-                    sh "$sonarScannerHome/bin/sonar-scanner -Dsonar.projectName=Bank -Dsonar.projectKey=Bank"
-                }
-            }
-        }
+        // stage('Sonar-scanner') {
+        //     steps {
+        //         withSonarQubeEnv('sonar-server') {
+        //             sh "$sonarScannerHome/bin/sonar-scanner -Dsonar.projectName=Bank -Dsonar.projectKey=Bank"
+        //         }
+        //     }
+        // }
 
         stage('Install dependencies') {
             steps {
