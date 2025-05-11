@@ -45,7 +45,7 @@ pipeline {
 
         stage('Backend build') {
             steps {
-                dir('/root/.jenkins/workspace/Bank/app/backend') {
+                dir('/var/lib/jenkins/workspace/bank-app/app/backend') {
                     sh 'npm install'
                 }
             }
@@ -53,7 +53,7 @@ pipeline {
 
         stage('Frontend build') {
             steps {
-                dir('/root/.jenkins/workspace/Bank/app/frontend') {
+                dir('/var/lib/jenkins/workspace/bank-app/app/frontend') {
                     sh 'npm install'
                 }
             }
