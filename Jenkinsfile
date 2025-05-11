@@ -1,4 +1,3 @@
-
 pipeline {
     agent any
 
@@ -15,8 +14,11 @@ pipeline {
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
-        stage('trivyFs scan'){
-            sh 'trivy fs .'
+
+        stage('Trivy FS Scan') {
+            steps {
+                sh 'trivy fs .'
+            }
         }
     }
 }
