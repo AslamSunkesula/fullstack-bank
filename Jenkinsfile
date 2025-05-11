@@ -61,11 +61,13 @@ pipeline {
                 }
             }
         }
-
         stage('Deploy to Container') {
             steps {
-                sh "docker compose up -d"
-            }
+                dir('app') {
+                    sh 'docker compose up -d'
         }
+    }
+}
+
     }
 }
