@@ -1,83 +1,70 @@
 pipeline {
     agent any
-    tools {
+    
+    tools{
+        jdk 'jdk17'
         nodejs 'node16'
+        
     }
-
-    environment {
-        sonarScannerHome = tool 'sonar'
+    
+    environment{
+        SCANNER_HOME= tool 'sonar'
     }
-
+    
     stages {
-        stage('Git-checkout') {
+        stage('Git Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/AslamSunkesula/fullstack-bank.git'
             }
         }
-
-        stage('Clean workspace') {
+        
+        stage('OWASP FS SCAN') {
             steps {
-                cleanWs()
-                // Ensure proper permissions on workspace
-                sh 'sudo chown -R jenkins:jenkins . || true'
-                sh 'sudo chmod -R 755 . || true'
+                dependencyCheck additionalArguments: '--scan ./app/backend --disableYarnAudit --disableNodeAudit', odcInstallation: 'DC'
+                    dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
-
-        // stage('Dependency-check') {
-        //     steps {
-        //         dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP'
-        //         dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
-        //     }
-        // }
-
-        // stage('TRIVY FS SCAN') {
-        //     steps {
-        //         sh 'trivy fs --format table -o trivy-fs-report.html .'
-        //     }
-        // }
-
-        // stage('Sonar-scanner') {
-        //     steps {
-        //         withSonarQubeEnv('sonar-server') {
-        //             sh "$sonarScannerHome/bin/sonar-scanner -Dsonar.projectName=Bank -Dsonar.projectKey=Bank"
-        //         }
-        //     }
-        // }
-
-        stage('Install dependencies') {
+        
+        stage('TRIVY FS SCAN') {
             steps {
-                script {
-                    // Install project dependencies
-                    sh 'npm install'
+                sh "trivy fs ."
+            }
+        }
+        
+        stage('SONARQUBE ANALYSIS') {
+            steps {
+                withSonarQubeEnv('sonar') {
+                    sh " $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Bank -Dsonar.projectKey=Bank "
                 }
             }
         }
-
-        // stage('Backend build') {
+        
+        
+         stage('Install Dependencies') {
+            steps {
+                sh "npm install"
+            }
+        }
+        
+        // stage('Backend') {
         //     steps {
-        //         dir('/var/lib/jenkins/workspace/bank-app/app/backend') {
-        //             sh 'npm install'
-        //             // Uncomment the following line if a build step is required
-        //             // sh 'npm run build'
+        //         dir('/root/.jenkins/workspace/Bank/app/backend') {
+        //             sh "npm install"
         //         }
         //     }
         // }
-
-        // stage('Frontend build') {
+        
+        // stage('frontend') {
         //     steps {
-        //         dir('/var/lib/jenkins/workspace/bank-app/app/frontend') {
-        //             sh 'npm install'
-        //             // Uncomment the following line if a build step is required
-        //             // sh 'npm run build'
+        //         dir('/root/.jenkins/workspace/Bank/app/frontend') {
+        //             sh "npm install"
         //         }
         //     }
         // }
-
-        // stage('Deployment') {
+        
+        // stage('Deploy to Conatiner') {
         //     steps {
-        //         // Deploy using docker-compose
-        //         sh 'docker compose -f docker-compose.yml up -d --build'
+        //         sh "npm run compose:up -d"
         //     }
         // }
     }
