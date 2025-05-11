@@ -1,6 +1,9 @@
 pipeline {
     agent any
-//
+    tools {
+        nodejs 'node16'
+    }
+
     environment {
         sonarScannerHome = tool 'SonarQube'
     }
@@ -29,6 +32,28 @@ pipeline {
             steps {
                 withSonarQubeEnv('sonar-server') {
                     sh "$sonarScannerHome/bin/sonar-scanner -Dsonar.projectName=Bank -Dsonar.projectKey=Bank"
+                }
+            }
+        }
+
+        stage('Install dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+
+        stage('Backend build') {
+            steps {
+                dir('/root/.jenkins/workspace/Bank/app/backend') {
+                    sh 'npm install'
+                }
+            }
+        }
+
+        stage('Frontend build') {
+            steps {
+                dir('/root/.jenkins/workspace/Bank/app/frontend') {
+                    sh 'npm install'
                 }
             }
         }
