@@ -2,7 +2,7 @@ pipeline {
     agent any
     tools {
         nodejs 'node16'
-        ////
+        //////
     }
 
     environment {
@@ -63,4 +63,6 @@ pipeline {
                sh 'docker compose -f docker-compose.yml up -d'
             }
     }
+}
+
 }
