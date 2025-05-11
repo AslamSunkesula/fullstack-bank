@@ -24,7 +24,7 @@ services:
   backend:
     container_name: ng_backend
     build: 
-      context: ./backend
+      context: .app/backend
       dockerfile: Dockerfile
     ports:
       - "3001:3001"
